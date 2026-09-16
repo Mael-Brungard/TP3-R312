@@ -1,26 +1,126 @@
 ---
 import "../styles/global.css";
+const currentPath = Astro.url.pathname;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="fr">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
-    <title>Astro Basics</title>
+    <title>Penguin Atlas</title>
   </head>
-  <body>
-    <slot />
+  <body class="min-h-screen bg-slate-950 text-slate-100 antialiased">
+    <header class="border-b border-white/10 bg-slate-950/95">
+      <div
+        class="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-5 sm:flex-row sm:items-center sm:justify-between lg:px-8"
+      >
+        <a href="/" class="group flex items-center gap-3">
+          <span
+            class="flex h-10 w-10 items-center justify-center rounded-2xl bg-cyan-400 text-xl text-slate-950 shadow-lg shadow-cyan-400/20"
+            >P</span
+          >
+          <span>
+            <span
+              class="block text-sm font-black uppercase tracking-[0.24em] text-cyan-300"
+              >Penguin</span
+            >
+            <span
+              class="block text-xs font-medium uppercase tracking-[0.18em] text-slate-400"
+              >Atlas des espèces</span
+            >
+          </span>
+        </a>
+
+        <nav aria-label="Navigation principale">
+          <ul
+            class="flex flex-wrap items-center gap-2 text-sm font-semibold text-slate-300"
+          >
+            <li>
+              <a
+                href="/"
+                class:list={[
+                  "rounded-full px-4 py-2 transition",
+                  currentPath === "/"
+                    ? "bg-white text-slate-950"
+                    : "hover:bg-white/10 hover:text-white",
+                ]}
+                aria-current={currentPath === "/" ? "page" : undefined}
+                >Accueil</a
+              >
+            </li>
+            <li>
+              <a
+                href="/species"
+                class:list={[
+                  "rounded-full px-4 py-2 transition",
+                  currentPath === "/species"
+                    ? "bg-white text-slate-950"
+                    : "hover:bg-white/10 hover:text-white",
+                ]}
+                aria-current={currentPath === "/species" ? "page" : undefined}
+                >Espèces</a
+              >
+            </li>
+            <li>
+              <a
+                href="/species/adelie"
+                class:list={[
+                  "rounded-full px-4 py-2 transition",
+                  currentPath === "/species/adelie"
+                    ? "bg-white text-slate-950"
+                    : "hover:bg-white/10 hover:text-white",
+                ]}
+                aria-current={currentPath === "/species/adelie"
+                  ? "page"
+                  : undefined}>Adelie</a
+              >
+            </li>
+            <li>
+              <a
+                href="/species/chinstrap"
+                class:list={[
+                  "rounded-full px-4 py-2 transition",
+                  currentPath === "/species/chinstrap"
+                    ? "bg-white text-slate-950"
+                    : "hover:bg-white/10 hover:text-white",
+                ]}
+                aria-current={currentPath === "/species/chinstrap"
+                  ? "page"
+                  : undefined}>Chinstrap</a
+              >
+            </li>
+            <li>
+              <a
+                href="/species/gentoo"
+                class:list={[
+                  "rounded-full px-4 py-2 transition",
+                  currentPath === "/species/gentoo"
+                    ? "bg-white text-slate-950"
+                    : "hover:bg-white/10 hover:text-white",
+                ]}
+                aria-current={currentPath === "/species/gentoo"
+                  ? "page"
+                  : undefined}>Gentoo</a
+              >
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    <div class="relative overflow-hidden">
+      <div
+        class="pointer-events-none absolute -right-32 -top-32 h-80 w-80 rounded-full bg-cyan-400/10 blur-3xl"
+      >
+      </div>
+      <slot />
+    </div>
+    <footer
+      class="border-t border-white/10 px-6 py-8 text-center text-xs uppercase tracking-[0.2em] text-slate-500"
+    >
+      Données d’observation des manchots
+    </footer>
   </body>
 </html>
-
-<style>
-  html,
-  body {
-    margin: 0;
-    width: 100%;
-    height: 100%;
-  }
-</style>

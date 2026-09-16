@@ -1,0 +1,161 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import GraphicSpecies from "../../components/GraphicSpecies.astro";
+---
+
+<Layout>
+    <main class="mx-auto max-w-7xl px-6 py-12 lg:px-8 lg:py-16">
+        <div class="max-w-2xl">
+            <p
+                class="text-sm font-bold uppercase tracking-[0.3em] text-cyan-300"
+            >
+                Catalogue morphologique
+            </p>
+            <h1
+                class="mt-3 text-4xl font-black tracking-tight text-white sm:text-5xl"
+            >
+                Les différentes espèces
+            </h1>
+            <p class="mt-5 text-lg leading-8 text-slate-400">
+                Faites défiler les profils pour comparer les mesures des trois
+                populations.
+            </p>
+        </div>
+
+        <nav
+            aria-label="Navigation des espèces"
+            class="mt-8 flex max-w-full gap-2 overflow-x-auto pb-2"
+        >
+            <a
+                href="#adelie"
+                class="menu-item active shrink-0 rounded-full border border-white/15 px-5 py-2.5 text-sm font-bold text-slate-300 transition hover:border-cyan-300/50 hover:text-white [.active]:border-red-300 [.active]:bg-red-200 [.active]:text-slate-950"
+                aria-current="true">Adelie</a
+            >
+            <a
+                href="#chinstrap"
+                class="menu-item shrink-0 rounded-full border border-white/15 px-5 py-2.5 text-sm font-bold text-slate-300 transition hover:border-cyan-300/50 hover:text-white [.active]:border-red-300 [.active]:bg-red-200 [.active]:text-slate-950"
+                >Chinstrap</a
+            >
+            <a
+                href="#gentoo"
+                class="menu-item shrink-0 rounded-full border border-white/15 px-5 py-2.5 text-sm font-bold text-slate-300 transition hover:border-cyan-300/50 hover:text-white [.active]:border-red-300 [.active]:bg-red-200 [.active]:text-slate-950"
+                >Gentoo</a
+            >
+        </nav>
+
+        <div
+            data-species-slider
+            class="-mx-6 mt-8 flex snap-x snap-mandatory overflow-x-auto px-6 scroll-smooth lg:-mx-8 lg:px-8"
+        >
+            <section
+                id="adelie"
+                class="item w-2/3 shrink-0 snap-start scroll-mt-8 pr-4"
+                aria-labelledby="adelie-title"
+            >
+                <h2
+                    id="adelie-title"
+                    class="mb-5 text-2xl font-black text-white"
+                >
+                    Adelie
+                </h2>
+                <GraphicSpecies species="Adelie" />
+            </section>
+            <section
+                id="chinstrap"
+                class="item w-2/3 shrink-0 snap-start scroll-mt-8 pr-4"
+                aria-labelledby="chinstrap-title"
+            >
+                <h2
+                    id="chinstrap-title"
+                    class="mb-5 text-2xl font-black text-white"
+                >
+                    Chinstrap
+                </h2>
+                <GraphicSpecies species="Chinstrap" />
+            </section>
+            <section
+                id="gentoo"
+                class="item w-2/3 shrink-0 snap-start scroll-mt-8 pr-4"
+                aria-labelledby="gentoo-title"
+            >
+                <h2
+                    id="gentoo-title"
+                    class="mb-5 text-2xl font-black text-white"
+                >
+                    Gentoo
+                </h2>
+                <GraphicSpecies species="Gentoo" />
+            </section>
+        </div>
+    </main>
+</Layout>
+
+<script>
+    const slider = document.querySelector<HTMLElement>("[data-species-slider]");
+    const menuItems =
+        document.querySelectorAll<HTMLAnchorElement>(".menu-item");
+    const items = document.querySelectorAll<HTMLElement>(".item");
+
+    console.log("menuItems", menuItems);
+    console.log("items", items);
+
+    const setActiveSpecies = (species: string) => {
+        menuItems.forEach((menuItem) => {
+            const isActive = menuItem.getAttribute("href") === `#${species}`;
+            menuItem.classList.toggle("active", isActive);
+            menuItem.setAttribute("aria-current", isActive ? "true" : "false");
+        });
+    };
+
+    menuItems.forEach((link) => {
+        link.addEventListener("click", (event) => {
+            event.preventDefault();
+            const target = link.getAttribute("href");
+            const species = target?.startsWith("#") ? target.slice(1) : null;
+            const section = species ? document.getElementById(species) : null;
+
+            if (slider && section && species) {
+                slider.scrollTo({
+                    left: section.offsetLeft - slider.offsetLeft,
+                    behavior: "smooth",
+                });
+                history.replaceState(null, "", `#${species}`);
+                setActiveSpecies(species);
+            }
+        });
+    });
+
+    if (slider) {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    const id = entry.target.getAttribute("id");
+                    const menuItem = document.querySelector<HTMLAnchorElement>(
+                        `.menu-item[href="#${id}"]`,
+                    );
+
+                    if (entry.isIntersecting) {
+                        menuItem?.classList.add("active");
+                    } else {
+                        menuItem?.classList.remove("active");
+                    }
+                });
+            },
+            { root: slider, threshold: 0.5 },
+        );
+
+        items.forEach((item) => observer.observe(item));
+
+        const initialSpecies = window.location.hash.slice(1);
+        const initialSection = initialSpecies
+            ? document.getElementById(initialSpecies)
+            : null;
+        if (initialSection) {
+            slider.scrollTo({
+                left: initialSection.offsetLeft - slider.offsetLeft,
+                behavior: "instant",
+            });
+            setActiveSpecies(initialSpecies);
+        }
+    }
+</script>

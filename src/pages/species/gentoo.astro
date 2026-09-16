@@ -1,0 +1,32 @@
+---
+import PlotFigure from "../../components/PlotFigure.astro";
+import Layout from "../../layouts/Layout.astro";
+import GraphicSpecies from "../../components/GraphicSpecies.astro";
+---
+
+<Layout>
+    <main class="mx-auto max-w-7xl px-6 py-12 lg:px-8 lg:py-16">
+        <a
+            href="/species"
+            class="text-sm font-bold text-cyan-300 transition hover:text-cyan-200"
+            >← Retour aux espèces</a
+        >
+        <div class="mt-10 max-w-2xl">
+            <p
+                class="text-sm font-bold uppercase tracking-[0.3em] text-cyan-300"
+            >
+                Fiche espèce · 03
+            </p>
+            <h1 class="mt-3 text-5xl font-black tracking-tight text-white">
+                Gentoo
+            </h1>
+            <p class="mt-5 text-lg leading-8 text-slate-400">
+                Un profil plus élancé qui complète la comparaison des
+                populations étudiées dans l’atlas.
+            </p>
+        </div>
+        <div class="mt-10">
+            <GraphicSpecies species="Gentoo" />
+        </div>
+    </main>
+</Layout>
