@@ -34,80 +34,35 @@ const currentPath = Astro.url.pathname;
           </span>
         </a>
 
-        <nav aria-label="Navigation principale">
-          <ul
-            class="flex flex-wrap items-center gap-2 text-sm font-semibold text-slate-300"
+        <label class="sr-only" for="page-navigation"
+          >Navigation principale</label
+        >
+        <select
+          id="page-navigation"
+          class="rounded-full border border-white/15 bg-slate-900 px-4 py-2 text-sm font-semibold text-slate-100 outline-none transition focus:border-cyan-300 focus:ring-2 focus:ring-cyan-300/30"
+          aria-label="Navigation principale"
+        >
+          <option value="/" selected={currentPath === "/"}>Accueil</option>
+          <option value="/species/" selected={currentPath === "/species/"}
+            >Slider</option
           >
-            <li>
-              <a
-                href="/"
-                class:list={[
-                  "rounded-full px-4 py-2 transition",
-                  currentPath === "/"
-                    ? "bg-white text-slate-950"
-                    : "hover:bg-white/10 hover:text-white",
-                ]}
-                aria-current={currentPath === "/" ? "page" : undefined}
-                >Accueil</a
-              >
-            </li>
-            <li>
-              <a
-                href="/species"
-                class:list={[
-                  "rounded-full px-4 py-2 transition",
-                  currentPath === "/species"
-                    ? "bg-white text-slate-950"
-                    : "hover:bg-white/10 hover:text-white",
-                ]}
-                aria-current={currentPath === "/species" ? "page" : undefined}
-                >Espèces</a
-              >
-            </li>
-            <li>
-              <a
-                href="/species/adelie"
-                class:list={[
-                  "rounded-full px-4 py-2 transition",
-                  currentPath === "/species/adelie"
-                    ? "bg-white text-slate-950"
-                    : "hover:bg-white/10 hover:text-white",
-                ]}
-                aria-current={currentPath === "/species/adelie"
-                  ? "page"
-                  : undefined}>Adelie</a
-              >
-            </li>
-            <li>
-              <a
-                href="/species/chinstrap"
-                class:list={[
-                  "rounded-full px-4 py-2 transition",
-                  currentPath === "/species/chinstrap"
-                    ? "bg-white text-slate-950"
-                    : "hover:bg-white/10 hover:text-white",
-                ]}
-                aria-current={currentPath === "/species/chinstrap"
-                  ? "page"
-                  : undefined}>Chinstrap</a
-              >
-            </li>
-            <li>
-              <a
-                href="/species/gentoo"
-                class:list={[
-                  "rounded-full px-4 py-2 transition",
-                  currentPath === "/species/gentoo"
-                    ? "bg-white text-slate-950"
-                    : "hover:bg-white/10 hover:text-white",
-                ]}
-                aria-current={currentPath === "/species/gentoo"
-                  ? "page"
-                  : undefined}>Gentoo</a
-              >
-            </li>
-          </ul>
-        </nav>
+          <option
+            value="/species/tabs/"
+            selected={currentPath === "/species/tabs/"}>Onglets</option
+          >
+          <option
+            value="/species/adelie/"
+            selected={currentPath === "/species/adelie/"}>Adelie</option
+          >
+          <option
+            value="/species/chinstrap/"
+            selected={currentPath === "/species/chinstrap/"}>Chinstrap</option
+          >
+          <option
+            value="/species/gentoo/"
+            selected={currentPath === "/species/gentoo/"}>Gentoo</option
+          >
+        </select>
       </div>
     </header>
     <div class="relative overflow-hidden">
@@ -124,3 +79,12 @@ const currentPath = Astro.url.pathname;
     </footer>
   </body>
 </html>
+
+<script>
+  document
+    .querySelector<HTMLSelectElement>("#page-navigation")
+    ?.addEventListener("change", (event) => {
+      const value = (event.target as HTMLSelectElement).value;
+      location.pathname = value;
+    });
+</script>

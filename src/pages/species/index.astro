@@ -22,34 +22,26 @@ import GraphicSpecies from "../../components/GraphicSpecies.astro";
             </p>
         </div>
 
-        <nav
-            aria-label="Navigation des espèces"
-            class="mt-8 flex max-w-full gap-2 overflow-x-auto pb-2"
+        <label class="sr-only" for="species-anchor-navigation"
+            >Navigation des espèces</label
         >
-            <a
-                href="#adelie"
-                class="menu-item active shrink-0 rounded-full border border-white/15 px-5 py-2.5 text-sm font-bold text-slate-300 transition hover:border-cyan-300/50 hover:text-white [.active]:border-red-300 [.active]:bg-red-200 [.active]:text-slate-950"
-                aria-current="true">Adelie</a
-            >
-            <a
-                href="#chinstrap"
-                class="menu-item shrink-0 rounded-full border border-white/15 px-5 py-2.5 text-sm font-bold text-slate-300 transition hover:border-cyan-300/50 hover:text-white [.active]:border-red-300 [.active]:bg-red-200 [.active]:text-slate-950"
-                >Chinstrap</a
-            >
-            <a
-                href="#gentoo"
-                class="menu-item shrink-0 rounded-full border border-white/15 px-5 py-2.5 text-sm font-bold text-slate-300 transition hover:border-cyan-300/50 hover:text-white [.active]:border-red-300 [.active]:bg-red-200 [.active]:text-slate-950"
-                >Gentoo</a
-            >
-        </nav>
+        <select
+            id="species-anchor-navigation"
+            class="mt-8 rounded-full border border-white/15 bg-slate-900 px-5 py-2.5 text-sm font-bold text-slate-100 outline-none transition focus:border-cyan-300 focus:ring-2 focus:ring-cyan-300/30"
+            aria-label="Navigation des espèces"
+        >
+            <option value="adelie" selected>Adelie</option>
+            <option value="chinstrap">Chinstrap</option>
+            <option value="gentoo">Gentoo</option>
+        </select>
 
         <div
             data-species-slider
-            class="-mx-6 mt-8 flex snap-x snap-mandatory overflow-x-auto px-6 scroll-smooth lg:-mx-8 lg:px-8"
+            class="-mx-6 mt-8 flex overflow-x-auto px-6 scroll-smooth lg:-mx-8 lg:px-8"
         >
             <section
                 id="adelie"
-                class="item w-2/3 shrink-0 snap-start scroll-mt-8 pr-4"
+                class="item w-2/3 shrink-0 scroll-mt-8 pr-4"
                 aria-labelledby="adelie-title"
             >
                 <h2
@@ -62,7 +54,7 @@ import GraphicSpecies from "../../components/GraphicSpecies.astro";
             </section>
             <section
                 id="chinstrap"
-                class="item w-2/3 shrink-0 snap-start scroll-mt-8 pr-4"
+                class="item w-2/3 shrink-0 scroll-mt-8 pr-4"
                 aria-labelledby="chinstrap-title"
             >
                 <h2
@@ -75,7 +67,7 @@ import GraphicSpecies from "../../components/GraphicSpecies.astro";
             </section>
             <section
                 id="gentoo"
-                class="item w-2/3 shrink-0 snap-start scroll-mt-8 pr-4"
+                class="item w-2/3 shrink-0 scroll-mt-8 pr-4"
                 aria-labelledby="gentoo-title"
             >
                 <h2
@@ -92,37 +84,36 @@ import GraphicSpecies from "../../components/GraphicSpecies.astro";
 
 <script>
     const slider = document.querySelector<HTMLElement>("[data-species-slider]");
-    const menuItems =
-        document.querySelectorAll<HTMLAnchorElement>(".menu-item");
+    const speciesNavigation = document.querySelector<HTMLSelectElement>(
+        "#species-anchor-navigation",
+    );
     const items = document.querySelectorAll<HTMLElement>(".item");
 
-    console.log("menuItems", menuItems);
-    console.log("items", items);
-
     const setActiveSpecies = (species: string) => {
-        menuItems.forEach((menuItem) => {
-            const isActive = menuItem.getAttribute("href") === `#${species}`;
-            menuItem.classList.toggle("active", isActive);
-            menuItem.setAttribute("aria-current", isActive ? "true" : "false");
-        });
+        if (speciesNavigation) speciesNavigation.value = species;
     };
 
-    menuItems.forEach((link) => {
-        link.addEventListener("click", (event) => {
-            event.preventDefault();
-            const target = link.getAttribute("href");
-            const species = target?.startsWith("#") ? target.slice(1) : null;
-            const section = species ? document.getElementById(species) : null;
+    const centerSection = (section: HTMLElement) => {
+        if (!slider) return;
 
-            if (slider && section && species) {
-                slider.scrollTo({
-                    left: section.offsetLeft - slider.offsetLeft,
-                    behavior: "smooth",
-                });
-                history.replaceState(null, "", `#${species}`);
-                setActiveSpecies(species);
-            }
-        });
+        const sectionOffset = section.offsetLeft - slider.offsetLeft;
+        const centeredOffset =
+            sectionOffset - (slider.clientWidth - section.offsetWidth) / 2;
+        const maxOffset = slider.scrollWidth - slider.clientWidth;
+
+        slider.style.scrollBehavior = "auto";
+        slider.scrollLeft = Math.max(0, Math.min(centeredOffset, maxOffset));
+    };
+
+    speciesNavigation?.addEventListener("change", (event) => {
+        const species = (event.target as HTMLSelectElement).value;
+        const section = species ? document.getElementById(species) : null;
+
+        if (slider && section && species) {
+            location.hash = species;
+            window.setTimeout(() => centerSection(section), 0);
+            setActiveSpecies(species);
+        }
     });
 
     if (slider) {
@@ -130,18 +121,12 @@ import GraphicSpecies from "../../components/GraphicSpecies.astro";
             (entries) => {
                 entries.forEach((entry) => {
                     const id = entry.target.getAttribute("id");
-                    const menuItem = document.querySelector<HTMLAnchorElement>(
-                        `.menu-item[href="#${id}"]`,
-                    );
-
                     if (entry.isIntersecting) {
-                        menuItem?.classList.add("active");
-                    } else {
-                        menuItem?.classList.remove("active");
+                        if (id) setActiveSpecies(id);
                     }
                 });
             },
-            { root: slider, threshold: 0.5 },
+            { root: slider, threshold: 0.75 },
         );
 
         items.forEach((item) => observer.observe(item));
@@ -151,10 +136,7 @@ import GraphicSpecies from "../../components/GraphicSpecies.astro";
             ? document.getElementById(initialSpecies)
             : null;
         if (initialSection) {
-            slider.scrollTo({
-                left: initialSection.offsetLeft - slider.offsetLeft,
-                behavior: "instant",
-            });
+            centerSection(initialSection);
             setActiveSpecies(initialSpecies);
         }
     }

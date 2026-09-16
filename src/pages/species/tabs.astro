@@ -1,0 +1,80 @@
+---
+import {
+    Tabs,
+    TabsList,
+    TabsTab,
+    TabsPanel,
+} from "accessible-astro-components";
+import Layout from "../../layouts/Layout.astro";
+import GraphicSpecies from "../../components/GraphicSpecies.astro";
+---
+
+<Layout>
+    <main class="mx-auto max-w-7xl px-6 py-12 lg:px-8 lg:py-16">
+        <div class="max-w-2xl">
+            <p
+                class="text-sm font-bold uppercase tracking-[0.3em] text-cyan-300"
+            >
+                Catalogue morphologique
+            </p>
+            <h1
+                class="mt-3 text-4xl font-black tracking-tight text-white sm:text-5xl"
+            >
+                Les espèces en onglets
+            </h1>
+            <p class="mt-5 text-lg leading-8 text-slate-400">
+                Une version accessible de la comparaison, avec un seul profil
+                visible à la fois.
+            </p>
+        </div>
+
+        <Tabs class="mt-8">
+            <TabsList
+                class="flex max-w-full gap-2 overflow-x-auto pb-2"
+                aria-label="Navigation des espèces"
+            >
+                <TabsTab
+                    id="adelie-tab"
+                    controls="adelie-panel"
+                    selected
+                    class="rounded-full! border! border-white/15! px-5! py-2.5! text-sm! font-bold! text-slate-300! aria-selected:border-red-300! aria-selected:bg-red-200! aria-selected:text-slate-950!"
+                    >Adelie</TabsTab
+                >
+                <TabsTab
+                    id="chinstrap-tab"
+                    controls="chinstrap-panel"
+                    class="rounded-full! border! border-white/15! px-5! py-2.5! text-sm! font-bold! text-slate-300! aria-selected:border-red-300! aria-selected:bg-red-200! aria-selected:text-slate-950!"
+                    >Chinstrap</TabsTab
+                >
+                <TabsTab
+                    id="gentoo-tab"
+                    controls="gentoo-panel"
+                    class="rounded-full! border! border-white/15! px-5! py-2.5! text-sm! font-bold! text-slate-300! aria-selected:border-red-300! aria-selected:bg-red-200! aria-selected:text-slate-950!"
+                    >Gentoo</TabsTab
+                >
+            </TabsList>
+
+            <TabsPanel
+                id="adelie-panel"
+                labelledby="adelie-tab"
+                selected
+                class="mt-6"
+            >
+                <h2 class="mb-5 text-2xl font-black text-white">Adelie</h2>
+                <GraphicSpecies species="Adelie" />
+            </TabsPanel>
+            <TabsPanel
+                id="chinstrap-panel"
+                labelledby="chinstrap-tab"
+                class="mt-6"
+            >
+                <h2 class="mb-5 text-2xl font-black text-white">Chinstrap</h2>
+                <GraphicSpecies species="Chinstrap" />
+            </TabsPanel>
+            <TabsPanel id="gentoo-panel" labelledby="gentoo-tab" class="mt-6">
+                <h2 class="mb-5 text-2xl font-black text-white">Gentoo</h2>
+                <GraphicSpecies species="Gentoo" />
+            </TabsPanel>
+        </Tabs>
+    </main>
+</Layout>
